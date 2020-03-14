@@ -1,4 +1,4 @@
-# Game Development Utilities
+# Lua Game Development Utilities
 ## Animation.lua
 Allows users to register and perform animations. It is supposedly a fast implementation since currently no state calculations are performed during runtime. All inbetween states are calculated on registration and only retrieval happens during runtime.
 
