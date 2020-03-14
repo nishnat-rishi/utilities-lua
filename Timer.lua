@@ -15,7 +15,7 @@ end
 
 function Timer.register(self, params)
   for i = 1, #self.ids do
-    if self.ids[i] == id then
+    if self.ids[i] == params.id then
       table.insert(self._pendingRegistrations, params) -- *6
       return
     end

@@ -18,7 +18,7 @@ end
 function Animation.register(self, params) -- *1
   local registered = false
   for i = 1, #self.ids do
-    if self.ids[i] == id then
+    if self.ids[i] == params.id then
       registered = true
       break
     end
@@ -86,15 +86,15 @@ function Animation.flip(self, id)
 end
 
 function Animation._constructFrames(self, id)
-  init, fin = self.tweener[id][2], self.tweener[id][3]
-  cFn, cI, cF = self.curve[id][1], self.curve[id][2], self.curve[id][3]
-  numFrames = math.ceil(self.duration[id] * 60)
-  cInc = (cF - cI) / numFrames
-  range = fin - init
+  local init, fin = self.tweener[id][2], self.tweener[id][3]
+  local cFn, cI, cF = self.curve[id][1], self.curve[id][2], self.curve[id][3]
+  local numFrames = math.ceil(self.duration[id] * 60)
+  local cInc = (cF - cI) / numFrames
+  local range = fin - init
   
   self.frames[id] = {0}
-  frames = self.frames[id]
-  cSum = 0
+  local frames = self.frames[id]
+  local cSum = 0
   
   j = cI
   
