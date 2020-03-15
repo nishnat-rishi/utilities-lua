@@ -5,18 +5,19 @@ Curves = require('Curves')
 function love.load()
   t = Timer.create()
   a = Animation.createController()
-  x = {100} --  wrap all 'animatable' variables into a table
+  x = {100} --  wrap all 'animatable' variables in a table
   t:register {
     id = 1, 
     duration = 2, -- in seconds
     callback = function() a:play(1) end,
-    periodic = true
+    periodic = false
   }
   a:register {
     id = 1,
-    duration = 1.2,
+    duration = 0.6,
     curve = Curves.easeIn,
     reversible = true,
+    continuous = true,
     tweener = {x, 100, 200},
   }
   
@@ -29,4 +30,14 @@ end
 
 function love.draw(dt)
   love.graphics.rectangle('fill', x[1], 100, 100, 100)
+end
+
+function love.keypressed(key)
+  if key == 'space' then
+    if a.running[1] then
+      a:pause(1)
+    else
+      a:play(1)
+    end
+  end
 end

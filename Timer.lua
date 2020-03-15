@@ -22,7 +22,6 @@ function Timer.register(self, params)
   end
   table.insert(self.ids, params.id)
   self:_rawRegister(params)
-    -- *5
 end
 
 function Timer.update(self, dt)

@@ -10,6 +10,7 @@ function Animation.createController()
       curve = {},
       tweener = {},
       running = {},
+      continuous = {},
       reversible = {},
       reverse = {},
       }, Animation)
@@ -30,8 +31,9 @@ function Animation.register(self, params) -- *1
   self.current[params.id] = 1
   self.running[params.id] = false
   self.curve[params.id] = params.curve
-  self.reversible[params.id] = params.reversible
+  self.reversible[params.id] = params.reversible or false
   self.reverse[params.id] = false
+  self.continuous[params.id] = params.continuous or false
   self.tweener[params.id] = params.tweener
   self:_constructFrames(params.id)
 end
@@ -46,20 +48,26 @@ function Animation.update(self)
       if not self.reversible[id] then
         self.current[id] = self.current[id] + 1
         if self.current[id] >= #self.frames[id] then -- *4
-          self:pause(id)
+          if not self.continuous[id] then 
+            self:pause(id) 
+          end
           self:reset(id)
         end
       else
         if not self.reverse[id] then
           self.current[id] = self.current[id] + 1
           if self.current[id] >= #self.frames[id] then
-            self:pause(id)
+            if not self.continuous[id] then 
+              self:pause(id) 
+            end
             self:flip(id)
           end
         else
           self.current[id] = self.current[id] - 1
           if self.current[id] <= 1 then
-            self:pause(id)
+            if not self.continuous[id] then 
+              self:pause(id) 
+            end
             self:flip(id)
           end
         end
