@@ -5,19 +5,22 @@ Curves = require('Curves')
 function love.load()
   t = Timer.create()
   a = Animation.createController()
+
   x = {100} --  wrap all 'animatable' variables in a table
+
   t:register {
     id = 1, 
     duration = 2, -- in seconds
     callback = function() a:play(1) end,
-    periodic = false
+    periodic = true
   }
+  
   a:register {
     id = 1,
     duration = 0.6,
     curve = Curves.easeIn,
     reversible = true,
-    continuous = true,
+    continuous = false,
     tweener = {x, 100, 200},
   }
   
