@@ -11,7 +11,7 @@ function love.load()
   t:register {
     id = 1, 
     duration = 2, -- in seconds
-    callback = function() a:play(1) end,
+    callback = function() a:toggle(1) end,
     periodic = true
   }
   
@@ -20,7 +20,7 @@ function love.load()
     duration = 0.6,
     curve = Curves.easeIn,
     reversible = true,
-    continuous = false,
+    continuous = true,
     tweener = {x, 100, 200},
   }
   
@@ -28,7 +28,7 @@ end
 
 function love.update(dt)
   t:update(dt)
-  a:update(dt)
+  a:update()
 end
 
 function love.draw(dt)
@@ -37,10 +37,9 @@ end
 
 function love.keypressed(key)
   if key == 'space' then
-    if a.running[1] then
-      a:pause(1)
-    else
-      a:play(1)
-    end
+    a:toggle(1)
+  end
+  if key == 'd' then
+    a:deregister(1)
   end
 end

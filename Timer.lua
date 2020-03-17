@@ -24,6 +24,10 @@ function Timer.register(self, params)
   self:_rawRegister(params)
 end
 
+function Timer.deregister(self, id)
+  self._trash[id] = true
+end
+
 function Timer.update(self, dt)
   for id, _ in pairs(self.ids) do
     if self.remaining[id] > 0 then
@@ -61,10 +65,6 @@ function Timer._clear(self)
     self.ids[id] = nil
     self._trash[id] = nil -- *2
   end
-end
-
-function Timer.deregister(self, id)
-  self._trash[id] = true
 end
 
 function Timer._registerPending(self)

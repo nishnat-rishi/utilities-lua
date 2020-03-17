@@ -1,4 +1,4 @@
-local Animation = {}
+local Animation = {} -- *5
 Animation.__index = Animation
 
 function Animation.createController()
@@ -13,37 +13,28 @@ function Animation.createController()
       continuous = {},
       reversible = {},
       reverse = {},
+      _trash = {},
+      _pendingRegistrations = {},
       }, Animation)
 end
 
 function Animation.register(self, params) -- *1
-  local registered = false
-  for i = 1, #self.ids do
-    if self.ids[i] == params.id then
-      registered = true
-      break
+  for id, _ in pairs(self.ids) do
+    if id == params.id then
+      self._pendingRegistrations[id] = params
+      return
     end
   end
-  if not registered then
-    table.insert(self.ids, params.id)
-  end
-  self.duration[params.id] = params.duration
-  self.current[params.id] = 1
-  self.running[params.id] = false
-  self.curve[params.id] = params.curve
-  self.reversible[params.id] = params.reversible or false
-  self.reverse[params.id] = false
-  self.continuous[params.id] = params.continuous or false
-  self.tweener[params.id] = params.tweener
-  self:_constructFrames(params.id)
+  self.ids[params.id] = true
+  self:_rawRegister(params)
 end
 
-
-
+function Animation.deregister(self, id)
+  self._trash[id] = true
+end
 
 function Animation.update(self)
-  for i = 1, #self.ids do
-    local id = self.ids[i]
+  for id, _ in pairs(self.ids) do
     if self.running[id] then
       if not self.reversible[id] then
         self.current[id] = self.current[id] + 1
@@ -75,22 +66,70 @@ function Animation.update(self)
       self.tweener[id][1][1] = self.frames[id][self.current[id]]
     end
   end
+  if next(self._trash) then
+    self:_clear()
+  end
+  if next(self._pendingRegistrations) then
+    self:_registerPending()
+  end
+end
+
+function Animation.toggle(self, id)
+  if self.ids[id] ~= nil then
+    self.running[id] = not self.running[id]
+  end
 end
 
 function Animation.play(self, id)
-  self.running[id] = true
+  if self.ids[id] ~= nil then
+    self.running[id] = true
+  end
 end
 
 function Animation.pause(self, id)
-  self.running[id] = false
+  if self.ids[id] ~= nil then
+    self.running[id] = false
+  end
 end
 
 function Animation.reset(self, id)
-  self.current[id] = 1
+  if self.ids[id] ~= nil then
+    self.current[id] = 1
+  end
 end
 
 function Animation.flip(self, id)
-  self.reverse[id] = not self.reverse[id]
+  if self.ids[id] ~= nil then
+    self.reverse[id] = not self.reverse[id]
+  end
+end
+
+function Animation._clear(self)
+  for id, _ in pairs(self._trash) do
+    if (self.current[id] - math.floor(#self.frames[id] / 2)) <= 0 then -- *6
+      self.tweener[id][1][1] = self.tweener[id][2]
+    else
+      self.tweener[id][1][1] = self.tweener[id][3]
+    end
+    self.duration[id] = nil
+    self.current[id] = nil
+    self.running[id] = nil
+    self.curve[id] = nil
+    self.reversible[id] = nil
+    self.reverse[id] = nil
+    self.continuous[id] = nil
+    self.tweener[id] = nil
+    self.frames[id] = nil
+    self.ids[id] = nil
+    self._trash[id] = nil
+  end
+end
+
+function Animation._registerPending(self)
+  for id, params in pairs(self._pendingRegistrations) do
+    self:_rawRegister(params)
+    self._pendingRegistrations[id] = nil
+  end
 end
 
 function Animation._constructFrames(self, id)
@@ -119,6 +158,17 @@ function Animation._constructFrames(self, id)
   end
 end
 
+function Animation._rawRegister(self, params)
+  self.duration[params.id] = params.duration
+  self.current[params.id] = 1
+  self.running[params.id] = false
+  self.curve[params.id] = params.curve
+  self.reversible[params.id] = params.reversible or false
+  self.reverse[params.id] = false
+  self.continuous[params.id] = params.continuous or false
+  self.tweener[params.id] = params.tweener
+  self:_constructFrames(params.id)
+end
 
 return Animation
 
@@ -135,5 +185,7 @@ return Animation
 *3: tweener = {{variable}, initial, final}
 
 *4: For now, after animation ends, pause and reset the animation.
+
+*6: On deregistration, the variable takes on the frame-wise closest value.
     
 --]]
