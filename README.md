@@ -10,6 +10,7 @@
 - Register object hitboxes. 
 - onEnter, onExit callbacks.
 - Safe registration, deregistration.
+- Check for collision on change or on every frame.
 
 ## Timer.lua
 - Register timers.
