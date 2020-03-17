@@ -14,33 +14,34 @@ function Timer.create()
 end
 
 function Timer.register(self, params)
-  for i = 1, #self.ids do
-    if self.ids[i] == params.id then
-      table.insert(self._pendingRegistrations, params) -- *6
+  for id, _ in pairs(self.ids) do -- *3
+    if id == params.id then
+      self._pendingRegistrations[id] = params -- *6
       return
     end
+    id = next(self.ids)
   end
-  table.insert(self.ids, params.id)
+  self.ids[params.id] = true
   self:_rawRegister(params)
 end
 
 function Timer.update(self, dt)
-  for i = 1, #self.ids do
-    local id = self.ids[i]
-    self.remaining[id] = self.remaining[id] - dt
+  for id, _ in pairs(self.ids) do
     if self.remaining[id] <= 0 then
       self.callback[id]()
       if self.periodic[id] then
         self.remaining[id] = self.duration[id]
       else
-        table.insert(self._trash, id)
+        self:deregister(id)
       end
+    else
+      self.remaining[id] = self.remaining[id] - dt 
     end
   end
-  if #self._trash > 0 then
+  if next(self._trash) then
     self:_clear()
   end
-  if #self._pendingRegistrations > 0 then
+  if next(self._pendingRegistrations) then
     self:registerPending()
   end
 end
@@ -53,22 +54,31 @@ function Timer._rawRegister(self, params)
 end
 
 function Timer._clear(self)
-  for i = 1, #self._trash do
-    local id = self._trash[i]
+  for id, _ in pairs(self._trash) do
+    --[[
     self.duration[id] = nil
     self.remaining[id] = nil
     self.callback[id] = nil
     self.periodic[id] = nil
-    table.remove(self.ids, i)
+    --]]
+    self.ids[id] = nil
+    self._trash[id] = nil -- *2
   end
 end
 
+function Timer.deregister(self, id)
+  self.duration[id] = nil
+  self.remaining[id] = nil
+  self.callback[id] = nil
+  self.periodic[id] = nil
+  self.ids[id] = nil
+end
+
 function Timer._registerPending(self)
-  for i = #self._pendingRegistrations, 1, -1 do
-    self:_rawRegister(self._pendingRegistrations[i])
-    table.remove(self._pendingRegistrations, i)
+  for id, params in pairs(self._pendingRegistrations) do
+    self:_rawRegister(params)
+    self._pendingRegistrations[id] = nil
   end
-  
 end
 
 return Timer
@@ -78,6 +88,28 @@ return Timer
 --------------------
 
 --[[ 
+
+*1: One performance increasing change can be to give the user the ability to
+    dispose of the timer instead of it happening automatically. This runs the
+    risk of unwary users not handling disposal at all and thus letting the 
+    memory get clogged. But it also allows careful users the opportunity to
+    optimize their code.
+
+*2: The iterator maintains its own state, so we can safely assign nil to 
+    self._trash[id].
+
+*3: Rethink the implications of 'self.ids[params.id] = true' and perhaps see 
+    what deep changes are in order (instead of just a naive refactoring i.e. 
+    loop conversions and minor assignment changes).
+
+    Potential (brainstormed) implications:
+
+    - Trashcans become trivial. (Somehow no trashcan would be required, simply
+      assign self.ids[id] = nil and the pairs loop will keep on chugging along)
+
+    - A separate _pendingRegistrations table is unnecessary! Simply overwrite.
+      (But this may cause race conditions within the update-for-loop! So think
+      this decision through carefully.)
 
 *4: params = {id, duration, callback, periodic}
     
