@@ -51,7 +51,7 @@ function Timer.create()
         table.remove(self.ids, i)
       end
     end,
-    }
+  }
 end
 
 return Timer

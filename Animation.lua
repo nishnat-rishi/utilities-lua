@@ -63,10 +63,10 @@ function Animation.update(self)
           end
         end
       end
-      self.tweener[id][1][1] = self.frames[id][self.current[id]]
+      self.tweener[id].object[self.tweener[id].index] = self.frames[id][self.current[id]]
     end
   end
-  if next(self._trash) then
+  if next(self._trash) then -- *7
     self:_clear()
   end
   if next(self._pendingRegistrations) then
@@ -107,9 +107,9 @@ end
 function Animation._clear(self)
   for id, _ in pairs(self._trash) do
     if (self.current[id] - math.floor(#self.frames[id] / 2)) <= 0 then -- *6
-      self.tweener[id][1][1] = self.tweener[id][2]
+      self.tweener[id].object[self.tweener[id].index] = self.tweener[id].initial
     else
-      self.tweener[id][1][1] = self.tweener[id][3]
+      self.tweener[id].object[self.tweener[id].index] = self.tweener[id].final
     end
     self.duration[id] = nil
     self.current[id] = nil
@@ -132,9 +132,21 @@ function Animation._registerPending(self)
   end
 end
 
+function Animation._rawRegister(self, params)
+  self.duration[params.id] = params.duration
+  self.current[params.id] = 1
+  self.running[params.id] = false
+  self.curve[params.id] = params.curve
+  self.reversible[params.id] = params.reversible or false
+  self.reverse[params.id] = false
+  self.continuous[params.id] = params.continuous or false
+  self.tweener[params.id] = params.tweener
+  self:_constructFrames(params.id)
+end
+
 function Animation._constructFrames(self, id)
-  local init, fin = self.tweener[id][2], self.tweener[id][3]
-  local cFn, cI, cF = self.curve[id][1], self.curve[id][2], self.curve[id][3]
+  local init, fin = self.tweener[id].initial, self.tweener[id].final
+  local cFn, cI, cF = self.curve[id].animFunction, self.curve[id].initial, self.curve[id].final
   local numFrames = math.ceil(self.duration[id] * 60)
   local cInc = (cF - cI) / numFrames
   local range = fin - init
@@ -158,18 +170,6 @@ function Animation._constructFrames(self, id)
   end
 end
 
-function Animation._rawRegister(self, params)
-  self.duration[params.id] = params.duration
-  self.current[params.id] = 1
-  self.running[params.id] = false
-  self.curve[params.id] = params.curve
-  self.reversible[params.id] = params.reversible or false
-  self.reverse[params.id] = false
-  self.continuous[params.id] = params.continuous or false
-  self.tweener[params.id] = params.tweener
-  self:_constructFrames(params.id)
-end
-
 return Animation
 
 --------------------
@@ -182,10 +182,18 @@ return Animation
 
 *2: curve = {animFn, initial, final}
 
-*3: tweener = {{variable}, initial, final}
+*3: tweener = {object, index, initial, final}
 
 *4: For now, after animation ends, pause and reset the animation.
 
+*5: This module requires a bit more deliberation! Registration is an
+    expensive operation! Make sure to perform all registrations upfront as much
+    as possible!
+
 *6: On deregistration, the variable takes on the frame-wise closest value.
+
+*7: This feels like it should be part of a hierarchy. Same functions have been
+    implemented multiple times to do the same disposal, rawRegistration and so
+    on routines.
     
 --]]
