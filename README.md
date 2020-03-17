@@ -1,19 +1,26 @@
 # Lua Game Development Utilities
-## Animation.lua
-Allows users to register and perform animations. Users can play, pause, toggle, reset animations at any point. Animations can be reversible and continuous.
 
-### Technical Specifics
-- It is supposedly a fast implementation since currently no state calculations are performed during runtime. All inbetween states are calculated on registration and simply retrieved during runtime.
-- Animation controls have been implemented in a thread-safe manner.
+## Animation.lua
+- Register animations to object variables.
+- Play, pause, toggle, reset animations at any point. 
+- Safe registration, deregistration.
+- Fast runtime performance.
 
 ## Hitbox.lua
-Attach hitboxes to objects. Can attach onEnter and onExit callbacks.
+- Register object hitboxes. 
+- onEnter, onExit callbacks.
+- Safe registration, deregistration.
 
 ## Timer.lua
-Allows users to register timers and attach callbacks. Runtime registration is supported.
-
-### Technical Specifics
-- Thread-safe registration, deregistration.
+- Register timers.
+- Attach callbacks upon end of timer.
+- Safe registration, deregistration.
 
 ## Curves.lua
 Helper module for Animation.lua.
+
+# Details
+
+Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these objects are controllers which maintain a registry of multiple individual entities (i.e. timers, hitboxes, animations). This allows users to maintain separate controllers for similar sets of objects (ex. A single hitbox controller maintaining hitboxes of 7 card objects representing a single hand in a card game).
+
+Except Timer.lua, no other module manages memory automatically. One has to manually deregister hitboxes and animations to 'delete' them (i.e. enable them to be garbage collected).
