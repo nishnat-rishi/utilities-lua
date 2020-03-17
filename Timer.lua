@@ -19,7 +19,6 @@ function Timer.register(self, params)
       self._pendingRegistrations[id] = params -- *6
       return
     end
-    id = next(self.ids)
   end
   self.ids[params.id] = true
   self:_rawRegister(params)
@@ -27,18 +26,18 @@ end
 
 function Timer.update(self, dt)
   for id, _ in pairs(self.ids) do
-    if self.remaining[id] <= 0 then
+    if self.remaining[id] > 0 then
+      self.remaining[id] = self.remaining[id] - dt 
+    else
       self.callback[id]()
       if self.periodic[id] then
         self.remaining[id] = self.duration[id]
       else
         self:deregister(id)
       end
-    else
-      self.remaining[id] = self.remaining[id] - dt 
     end
   end
-  if next(self._trash) then
+  if next(self._trash) then -- *5
     self:_clear()
   end
   if next(self._pendingRegistrations) then
@@ -55,23 +54,17 @@ end
 
 function Timer._clear(self)
   for id, _ in pairs(self._trash) do
-    --[[
     self.duration[id] = nil
     self.remaining[id] = nil
     self.callback[id] = nil
     self.periodic[id] = nil
-    --]]
     self.ids[id] = nil
     self._trash[id] = nil -- *2
   end
 end
 
 function Timer.deregister(self, id)
-  self.duration[id] = nil
-  self.remaining[id] = nil
-  self.callback[id] = nil
-  self.periodic[id] = nil
-  self.ids[id] = nil
+  self._trash[id] = true
 end
 
 function Timer._registerPending(self)
@@ -92,7 +85,7 @@ return Timer
 *1: One performance increasing change can be to give the user the ability to
     dispose of the timer instead of it happening automatically. This runs the
     risk of unwary users not handling disposal at all and thus letting the 
-    memory get clogged. But it also allows careful users the opportunity to
+    memory cost go ham. But it also affords careful users the opportunity to
     optimize their code.
 
 *2: The iterator maintains its own state, so we can safely assign nil to 
@@ -112,8 +105,12 @@ return Timer
       this decision through carefully.)
 
 *4: params = {id, duration, callback, periodic}
+
+*5: Optimization trick. We won't call self._clear() till there is something to
+    clear! This reduces one function call (in a function which is called 60
+    times a second!)
     
-*6: If the ID is already taken, just the current params onto a 'pending'
+*6: If the ID is already taken, just attach the current params onto a 'pending'
     registrations table. After the update loop is finished and trash is cleared,
     items from this pending table will be registered onto the existing id.
     
