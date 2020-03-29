@@ -68,7 +68,7 @@ smallBox = createSmallBox{ -- demo box
 ![animation_timer_hitbox.gif](https://s5.gifyu.com/images/ath.gif "Animation Timer Hitbox Demo")
 
 ```lua
-g:construct('casual box', {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2}, {
+gui:construct('casual box', {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2}, {
     base = GUI.Base.RECTANGLE,
     width = 100,
     height = 100,
