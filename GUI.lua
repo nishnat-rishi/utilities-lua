@@ -89,6 +89,7 @@ end
 function GUI.draw(self, id)
   local k, element = next(self.template[id])
   k, element = next(self.template[id], k)
+  element:draw()
   while next(self.template[id], k) do
     k, element = next(self.template[id], k)
     element.x = self.template[id][element.parent].x + element.x_offset()
