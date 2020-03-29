@@ -30,3 +30,54 @@ Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these ob
 Except Timer.lua, no other module manages memory automatically. One has to manually deregister hitboxes and animations to 'delete' them (i.e. enable them to be garbage collected). This decision has been taken to ensure no accidental interactions happen (i.e. trying to play a deregistered animation), and to make sure control of the cleaning discipline ultimately lies with the developer.
 
 Animation.lua has fast runtime performance because it calculates all intermediate states on registration. This means that the system merely retrieves the intermediate states during drawing (as opposed to calculating them).
+
+# Barebones Demonstration
+
+ ```lua
+ a:register {
+    id = 1,
+    duration = 0.6,
+    curve = Curves.easeIn,
+    reversible = true,
+    continuous = true,
+    tweener = {object=smallBox, index='x', initial=100, final=200},
+  }
+
+  t:register {
+    id = 1, 
+    duration = 2, -- in seconds
+    callback = function() a:toggle(1) end,
+    periodic = true
+  }
+
+  h:register{ -- *4
+    id = 1,
+    object = smallBox
+  }
+  ```
+
+![animation_timer_hitbox.gif](https://s5.gifyu.com/images/ath.gif "Animation Timer Hitbox Demo")
+
+```lua
+g:construct('casual box', {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2}, {
+    base = GUI.Base.RECTANGLE,
+    width = 100,
+    height = 100,
+    draggable = true,
+    onDragBegin = function () message = 'Drag begun!' end,
+    onDragEnd = function() message = 'Drag ended!' end,
+    child = {
+        base = GUI.Base.RECTANGLE,
+        width = 50,
+        height = 50,
+        alignment = GUI.Alignment.TOP_RIGHT,
+        alignmentOptions = {top = 50, right = 50},
+        child = {
+        base = GUI.Base.RECTANGLE,
+        width = 25,
+        height = 25,
+        }
+    }
+})
+```
+![gui.gif](https://s5.gifyu.com/images/GUI.gif "GUI Demo")
