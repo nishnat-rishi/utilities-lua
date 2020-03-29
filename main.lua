@@ -28,13 +28,6 @@ function love.load()
   smallBox = createSmallBox{x=100, y = 100, width = 100, height = 100}
 
   message = 'Hi!'
-
-  t:register {
-    id = 1, 
-    duration = 2, -- in seconds
-    callback = function() a:toggle(1) end,
-    periodic = true
-  }
   
   a:register {
     id = 1,
@@ -43,6 +36,13 @@ function love.load()
     reversible = true,
     continuous = true,
     tweener = {object=smallBox, index='x', initial=100, final=200},
+  }
+
+  t:register {
+    id = 1, 
+    duration = 2, -- in seconds
+    callback = function() a:toggle(1) end,
+    periodic = true
   }
 
   h:register{ -- *4
