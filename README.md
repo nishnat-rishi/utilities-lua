@@ -29,4 +29,4 @@ Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these ob
 
 Except Timer.lua, no other module manages memory automatically. One has to manually deregister hitboxes and animations to 'delete' them (i.e. enable them to be garbage collected). This decision has been taken to ensure no accidental interactions happen (i.e. trying to play a deregistered animation), and to make sure control of the cleaning discipline ultimately lies with the developer.
 
-Animation.lua can maintain runtime performance by calculating all intermediate states on registration. This means that the system merely retrieves the intermediate states during drawing (as opposed to calculating states).
+Animation.lua has fast runtime performance because it calculates all intermediate states on registration. This means that the system merely retrieves the intermediate states during drawing (as opposed to calculating them).
