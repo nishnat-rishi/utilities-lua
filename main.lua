@@ -13,8 +13,8 @@ function createSmallBox(params)
     draw = function(self)
       love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
     end,
-    onEnter = function(self) message = 'Entered!' end,
-    onExit = function(self) message = 'Exited!' end,
+    onEnter = params.onEnter,
+    onExit = params.onExit,
   }
 end
 
@@ -25,13 +25,20 @@ function love.load()
   g = GUI.create{
     windowDimensions = {width = love.graphics.getWidth(), height = love.graphics.getHeight()}
   }
-  smallBox = createSmallBox{x=100, y = 100, width = 100, height = 100}
+  smallBox = createSmallBox{
+    x=100, 
+    y = 100, 
+    width = 100, 
+    height = 100, 
+    onEnter = function(self) message = 'Entered!' end,
+    onExit = function(self) message = 'Exited!' end,
+  }
 
   message = 'Hi!'
   
   a:register {
     id = 1,
-    duration = 0.6,
+    duration = 0.6, -- seconds
     curve = Curves.easeIn,
     reversible = true,
     continuous = true,
@@ -40,7 +47,7 @@ function love.load()
 
   t:register {
     id = 1, 
-    duration = 2, -- in seconds
+    duration = 2, -- seconds
     callback = function() a:toggle(1) end,
     periodic = true
   }

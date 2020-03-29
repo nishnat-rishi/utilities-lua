@@ -34,23 +34,32 @@ Animation.lua has fast runtime performance because it calculates all intermediat
 # Barebones Demonstration
 
  ```lua
- a:register {
+smallBox = createSmallBox{ -- demo box
+    x=100, 
+    y = 100, 
+    width = 100, 
+    height = 100, 
+    onEnter = function(self) message = 'Entered!' end,
+    onExit = function(self) message = 'Exited!' end,
+  }
+
+ a:register { -- animation controller
     id = 1,
-    duration = 0.6,
+    duration = 0.6, -- seconds
     curve = Curves.easeIn,
     reversible = true,
     continuous = true,
     tweener = {object=smallBox, index='x', initial=100, final=200},
   }
 
-  t:register {
+  t:register { -- timer controller
     id = 1, 
-    duration = 2, -- in seconds
+    duration = 2, -- seconds
     callback = function() a:toggle(1) end,
     periodic = true
   }
 
-  h:register{ -- *4
+  h:register{ -- hitbox controller
     id = 1,
     object = smallBox
   }
