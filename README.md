@@ -31,7 +31,7 @@ Except Timer.lua, no other module manages memory automatically. One has to manua
 
 Animation.lua has fast runtime performance because it calculates all intermediate states on registration. This means that the system merely retrieves the intermediate states during drawing (as opposed to calculating them).
 
-# Barebones Demonstration
+<!-- # Barebones Demonstration
 
  ```lua
 smallBox = createSmallBox{ -- demo box
@@ -89,4 +89,4 @@ gui:construct('casual box', {x = love.graphics.getWidth() / 2, y = love.graphics
     }
 })
 ```
-![gui.gif](https://s5.gifyu.com/images/GUI.gif "GUI Demo")
+![gui.gif](https://s5.gifyu.com/images/GUI.gif "GUI Demo") -->
