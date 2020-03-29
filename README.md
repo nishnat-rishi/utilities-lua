@@ -18,7 +18,7 @@
 - Safe registration, deregistration.
 
 ## GUI.lua (BARELY WORKING PROTOTYPE)
-- Construct GUI elements "Flutter" style.
+- Construct GUI elements, "Flutter" style.
 
 ## Curves.lua
 Helper module for Animation.lua.
