@@ -25,7 +25,7 @@ Helper module for Animation.lua.
 
 # Details
 
-Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these objects are controllers which maintain a registry of multiple individual entities (i.e. timers, hitboxes, animations). This allows users to maintain separate controllers for similar sets of objects (ex. A single hitbox controller maintaining hitboxes of 7 card objects representing a single hand in a card game).
+Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these classes are controllers which maintain a registry of multiple individual entities (i.e. timers, hitboxes, animations). This allows users to maintain separate controllers for similar sets of objects (ex. A single hitbox controller maintaining hitboxes of 7 card objects representing a single hand in a card game).
 
 Except Timer.lua, no other module manages memory automatically. One has to manually deregister hitboxes and animations to 'delete' them (i.e. enable them to be garbage collected). This decision has been taken to ensure no accidental interactions happen (i.e. trying to play a deregistered animation), and to make sure control of the cleaning discipline ultimately lies with the developer.
 
