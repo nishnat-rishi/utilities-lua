@@ -33,6 +33,8 @@ Animation.lua has fast runtime performance because it calculates all intermediat
 
 # Barebones Demonstration
 
+## Animation-Timer-Hitbox
+
  ```lua
 smallBox = createSmallBox{ -- demo box
     x=100, 
@@ -66,6 +68,8 @@ smallBox = createSmallBox{ -- demo box
   ```
 
 ![animation_timer_hitbox.gif](https://s5.gifyu.com/images/ath.gif "Animation Timer Hitbox Demo")
+
+## GUI Construction
 
 ```lua
 gui:construct('casual box', {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2}, {
