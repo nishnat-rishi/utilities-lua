@@ -1,5 +1,22 @@
 # Lua Game Development Utilities
 
+# Field Tested Versions
+
+These are libraries which have actually been used in a project.
+
+## anim.lua
+Animate object properties. Position, scale, rotation, color even text. If it has some numerical component, it can be animated.
+
+## hitbox.lua
+Define regions of collision detection, place objects in said regions, attach callbacks to said objects. Now you can click on / hover over the objects and have things happen.
+
+## event.lua
+Dispatch events from anywhere in your code, handle them under one function. Simplifies separation of concerns. Infinitely flexible.
+
+<!-- (Put code examples here) -->
+
+# Theoretical Versions
+
 ## Animation.lua
 - Register animations to object variables.
 - Play, pause, toggle, reset animations at any point. 
