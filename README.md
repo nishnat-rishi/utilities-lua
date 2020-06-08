@@ -1,46 +1,46 @@
 # Lua Game Development Utilities
 
-# Field Tested Versions
+## Field Tested Versions
 
 These are libraries which have actually been used in a project.
 
-## anim.lua
+### anim.lua
 Animate object properties. Position, scale, rotation, color even text. If it has some numerical component, it can be animated.
 
-## hitbox.lua
+### hitbox.lua
 Define regions of collision detection, place objects in said regions, attach callbacks to said objects. Now you can click on / hover over the objects and have things happen.
 
-## event.lua
+### event.lua
 Dispatch events from anywhere in your code, handle them under one function. Simplifies separation of concerns. Infinitely flexible.
 
 <!-- (Put code examples here) -->
 
-# Theoretical Versions
+## Theoretical Versions
 
-## Animation.lua
+### Animation.lua
 - Register animations to object variables.
 - Play, pause, toggle, reset animations at any point. 
 - Safe registration, deregistration.
 - Fast runtime performance.
 
-## Hitbox.lua
+### Hitbox.lua
 - Register object hitboxes. 
 - onEnter, onExit callbacks.
 - Safe registration, deregistration.
 - Check for collision on change or on every frame.
 
-## Timer.lua
+### Timer.lua
 - Register timers.
 - Attach callbacks upon end of timer.
 - Safe registration, deregistration.
 
-## GUI.lua (BARELY WORKING PROTOTYPE)
+### GUI.lua (BARELY WORKING PROTOTYPE)
 - Construct GUI elements, "Flutter" style.
 
-## Curves.lua
+### Curves.lua
 Helper module for Animation.lua.
 
-# Details
+## Details
 
 Timer.lua, Hitbox.lua and Animation.lua follow a standard. Instances of these classes are controllers which maintain a registry of multiple individual entities (i.e. timers, hitboxes, animations). This allows users to maintain separate controllers for similar sets of objects (ex. A single hitbox controller maintaining hitboxes of 7 card objects representing a single hand in a card game).
 
